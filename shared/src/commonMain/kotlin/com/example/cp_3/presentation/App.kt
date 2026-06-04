@@ -2,12 +2,14 @@ package com.example.cp_3.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -43,6 +45,9 @@ fun App(
                 state = state,
                 onGet = {
                     viewModel.fetchPosts()
+                },
+                onPost = {
+                    viewModel.createPost()
                 }
             )
         }
@@ -53,15 +58,29 @@ fun App(
 private fun AppContent(
     state: AppState,
     onGet: () -> Unit,
+    onPost: () -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        Button(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = { onGet() }
+        Row(
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Text("GET")
+            Button(
+                modifier = Modifier.weight(1F),
+                onClick = { onGet() }
+            ) {
+                Text("GET")
+            }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Button(
+                modifier = Modifier.weight(1F),
+                onClick = { onPost() }
+            ) {
+                Text("POST")
+            }
         }
 
         Spacer(modifier = Modifier.height(4.dp))
@@ -100,5 +119,5 @@ private fun AppContent(
 @Preview
 @Composable
 private fun AppContentPreview() {
-    AppContent(AppState(), {})
+    AppContent(AppState(), {}, {})
 }
