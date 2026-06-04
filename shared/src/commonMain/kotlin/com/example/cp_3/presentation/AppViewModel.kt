@@ -94,6 +94,28 @@ class AppViewModel internal constructor(
         }
     }
 
+    internal fun deletePost() {
+        toggleProgressVisibility()
+        viewModelScope.launch {
+            resetPreviousResults()
+            delay(350.milliseconds)
+            when (val result = postRepository.deletePost(_state.value.posts.first().id)) {
+                is NetworkResult.Success -> {
+                    _state.update {
+                        it.copy(
+                            result = result.data.toString()
+                        )
+                    }
+                    toggleProgressVisibility()
+                }
+                is NetworkResult.Failure -> {
+                    _state.update { it.copy(error = result.errorMessage) }
+                    toggleProgressVisibility()
+                }
+            }
+        }
+    }
+
     private fun toggleProgressVisibility() {
         _state.update { it.copy(isProgressVisible = !it.isProgressVisible) }
     }

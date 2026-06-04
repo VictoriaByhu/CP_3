@@ -51,6 +51,9 @@ fun App(
                 },
                 onPut = {
                     viewModel.updatePost()
+                },
+                onDelete = {
+                    viewModel.deletePost()
                 }
             )
         }
@@ -63,6 +66,7 @@ private fun AppContent(
     onGet: () -> Unit,
     onPost: () -> Unit,
     onPut: () -> Unit,
+    onDelete: () -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
@@ -89,11 +93,24 @@ private fun AppContent(
 
         Spacer(modifier = Modifier.height(4.dp))
 
-        Button(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = { onPut() }
+        Row(
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Text("PUT")
+            Button(
+                modifier = Modifier.weight(1F),
+                onClick = { onPut() }
+            ) {
+                Text("PUT")
+            }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Button(
+                modifier = Modifier.weight(1F),
+                onClick = { onDelete() }
+            ) {
+                Text("DELETE")
+            }
         }
 
         Spacer(modifier = Modifier.height(4.dp))
@@ -132,5 +149,5 @@ private fun AppContent(
 @Preview
 @Composable
 private fun AppContentPreview() {
-    AppContent(AppState(), {}, {}, {})
+    AppContent(AppState(), {}, {}, {}, {})
 }

@@ -3,6 +3,7 @@ package com.example.cp_3.domain.posts
 import com.example.cp_3.data.common.NetworkResult
 import com.example.cp_3.data.posts.PostApiService
 import com.example.cp_3.data.posts.model.requests.NewPost
+import com.example.cp_3.data.posts.model.responses.DeletedPost
 import com.example.cp_3.data.posts.model.responses.Post
 import com.example.cp_3.data.posts.model.responses.Posts
 
@@ -20,5 +21,9 @@ internal class AppPostRepository(
 
     override suspend fun updatePost(post: Post): NetworkResult<Post> {
         return postApiService.updatePost(post)
+    }
+
+    override suspend fun deletePost(postId: Int): NetworkResult<DeletedPost> {
+        return postApiService.deletePost(postId)
     }
 }

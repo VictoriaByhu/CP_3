@@ -3,10 +3,12 @@ package com.example.cp_3.data.posts
 import com.example.cp_3.data.common.NetworkResult
 import com.example.cp_3.data.common.safeRequest
 import com.example.cp_3.data.posts.model.requests.NewPost
+import com.example.cp_3.data.posts.model.responses.DeletedPost
 import com.example.cp_3.data.posts.model.responses.Post
 import com.example.cp_3.data.posts.model.responses.Posts
 import io.ktor.client.HttpClient
 import io.ktor.client.request.accept
+import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.put
@@ -40,6 +42,14 @@ internal class AppPostApiService(
             put("$BASE_URL$POSTS_API/${post.id}") {
                 contentType(ContentType.Application.Json)
                 setBody(post)
+            }
+        }
+    }
+
+    override suspend fun deletePost(postId: Int): NetworkResult<DeletedPost> {
+        return client.safeRequest {
+            delete("$BASE_URL$POSTS_API/$postId") {
+                accept(ContentType.Application.Json)
             }
         }
     }
