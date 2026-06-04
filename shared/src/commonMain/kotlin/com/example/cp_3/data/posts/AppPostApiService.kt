@@ -9,6 +9,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.accept
 import io.ktor.client.request.get
 import io.ktor.client.request.post
+import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
@@ -28,6 +29,15 @@ internal class AppPostApiService(
     override suspend fun addPost(post: NewPost): NetworkResult<Post> {
         return client.safeRequest {
             post("$BASE_URL$POSTS_API/$ADD_POST") {
+                contentType(ContentType.Application.Json)
+                setBody(post)
+            }
+        }
+    }
+
+    override suspend fun updatePost(post: Post): NetworkResult<Post> {
+        return client.safeRequest {
+            put("$BASE_URL$POSTS_API/${post.id}") {
                 contentType(ContentType.Application.Json)
                 setBody(post)
             }

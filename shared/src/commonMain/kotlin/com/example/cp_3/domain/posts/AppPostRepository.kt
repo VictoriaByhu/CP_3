@@ -17,4 +17,8 @@ internal class AppPostRepository(
     override suspend fun addPost(post: NewPost): NetworkResult<Post> {
         return postApiService.addPost(post)
     }
+
+    override suspend fun updatePost(post: Post): NetworkResult<Post> {
+        return postApiService.updatePost(post)
+    }
 }

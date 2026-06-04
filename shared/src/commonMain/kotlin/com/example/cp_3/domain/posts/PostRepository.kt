@@ -8,4 +8,5 @@ import com.example.cp_3.data.posts.model.responses.Posts
 internal interface PostRepository {
     suspend fun getAllPosts(): NetworkResult<Posts>
     suspend fun addPost(post: NewPost): NetworkResult<Post>
+    suspend fun updatePost(post: Post): NetworkResult<Post>
 }

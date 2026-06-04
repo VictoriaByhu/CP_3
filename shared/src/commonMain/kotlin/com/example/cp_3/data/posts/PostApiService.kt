@@ -12,4 +12,5 @@ internal const val ADD_POST = "add"
 internal interface PostApiService {
     suspend fun getAllPosts(): NetworkResult<Posts>
     suspend fun addPost(post: NewPost): NetworkResult<Post>
+    suspend fun updatePost(post: Post): NetworkResult<Post>
 }

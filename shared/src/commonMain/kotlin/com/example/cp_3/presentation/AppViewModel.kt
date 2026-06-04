@@ -72,6 +72,28 @@ class AppViewModel internal constructor(
         }
     }
 
+    internal fun updatePost() {
+        toggleProgressVisibility()
+        viewModelScope.launch {
+            resetPreviousResults()
+            delay(350.milliseconds)
+            when (val result = postRepository.updatePost(_state.value.posts.first().copy(body = "Updated body"))) {
+                is NetworkResult.Success -> {
+                    _state.update {
+                        it.copy(
+                            result = result.data.toString()
+                        )
+                    }
+                    toggleProgressVisibility()
+                }
+                is NetworkResult.Failure -> {
+                    _state.update { it.copy(error = result.errorMessage) }
+                    toggleProgressVisibility()
+                }
+            }
+        }
+    }
+
     private fun toggleProgressVisibility() {
         _state.update { it.copy(isProgressVisible = !it.isProgressVisible) }
     }

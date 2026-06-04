@@ -48,6 +48,9 @@ fun App(
                 },
                 onPost = {
                     viewModel.createPost()
+                },
+                onPut = {
+                    viewModel.updatePost()
                 }
             )
         }
@@ -59,6 +62,7 @@ private fun AppContent(
     state: AppState,
     onGet: () -> Unit,
     onPost: () -> Unit,
+    onPut: () -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
@@ -81,6 +85,15 @@ private fun AppContent(
             ) {
                 Text("POST")
             }
+        }
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Button(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = { onPut() }
+        ) {
+            Text("PUT")
         }
 
         Spacer(modifier = Modifier.height(4.dp))
@@ -119,5 +132,5 @@ private fun AppContent(
 @Preview
 @Composable
 private fun AppContentPreview() {
-    AppContent(AppState(), {}, {})
+    AppContent(AppState(), {}, {}, {})
 }
