@@ -2,14 +2,23 @@ package com.example.cp_3.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -20,7 +29,7 @@ fun App(
     viewModel: AppViewModel = koinViewModel(),
 ) {
     MaterialTheme {
-        viewModel.state.collectAsStateWithLifecycle()
+        val state by viewModel.state.collectAsStateWithLifecycle()
 
         Column(
             modifier = Modifier
@@ -30,13 +39,66 @@ fun App(
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text("Networking is configured")
+            AppContent(
+                state = state,
+                onGet = {
+                    viewModel.fetchPosts()
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun AppContent(
+    state: AppState,
+    onGet: () -> Unit,
+) {
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Button(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = { onGet() }
+        ) {
+            Text("GET")
+        }
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        if (state.isProgressVisible) {
+            LinearProgressIndicator(
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+        }
+
+        state.result?.let {
+            val scrollState = rememberScrollState()
+            Text(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState),
+                text = it
+            )
+        }
+
+        state.error?.let {
+            val scrollState = rememberScrollState()
+            Text(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState),
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color.Red,
+                text = it
+            )
         }
     }
 }
 
 @Preview
 @Composable
-private fun AppPreview() {
-    App()
+private fun AppContentPreview() {
+    AppContent(AppState(), {})
 }
