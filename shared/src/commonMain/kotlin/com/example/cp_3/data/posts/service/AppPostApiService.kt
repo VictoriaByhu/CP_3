@@ -1,6 +1,5 @@
-package com.example.cp_3.data.posts
+package com.example.cp_3.data.posts.service
 
-import com.example.cp_3.data.common.NetworkResult
 import com.example.cp_3.data.common.safeRequest
 import com.example.cp_3.data.posts.model.requests.NewPost
 import com.example.cp_3.data.posts.model.responses.DeletedPost
@@ -15,12 +14,13 @@ import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import com.example.cp_3.data.common.Result
 
 internal class AppPostApiService(
     private val client: HttpClient
 ) : PostApiService {
 
-    override suspend fun getAllPosts(): NetworkResult<Posts> {
+    override suspend fun getAllPosts(): Result<Posts> {
         return client.safeRequest {
             get("$BASE_URL$POSTS_API") {
                 accept(ContentType.Application.Json)
@@ -28,7 +28,7 @@ internal class AppPostApiService(
         }
     }
 
-    override suspend fun addPost(post: NewPost): NetworkResult<Post> {
+    override suspend fun addPost(post: NewPost): Result<Post> {
         return client.safeRequest {
             post("$BASE_URL$POSTS_API/$ADD_POST") {
                 contentType(ContentType.Application.Json)
@@ -37,7 +37,7 @@ internal class AppPostApiService(
         }
     }
 
-    override suspend fun updatePost(post: Post): NetworkResult<Post> {
+    override suspend fun updatePost(post: Post): Result<Post> {
         return client.safeRequest {
             put("$BASE_URL$POSTS_API/${post.id}") {
                 contentType(ContentType.Application.Json)
@@ -46,7 +46,7 @@ internal class AppPostApiService(
         }
     }
 
-    override suspend fun deletePost(postId: Int): NetworkResult<DeletedPost> {
+    override suspend fun deletePost(postId: Int): Result<DeletedPost> {
         return client.safeRequest {
             delete("$BASE_URL$POSTS_API/$postId") {
                 accept(ContentType.Application.Json)

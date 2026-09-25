@@ -8,15 +8,19 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
-import org.koin.plugin.module.dsl.viewModel
-import com.example.cp_3.data.posts.AppPostApiService
-import com.example.cp_3.data.posts.PostApiService
-import com.example.cp_3.domain.posts.AppPostRepository
+import com.example.cp_3.data.posts.AppPostRepository
+import com.example.cp_3.data.posts.service.AppPostApiService
+import com.example.cp_3.data.posts.service.PostApiService
 import com.example.cp_3.domain.posts.PostRepository
 import com.example.cp_3.presentation.AppViewModel
+import com.example.cp_3.domain.posts.create.CreatePostUseCase
+import com.example.cp_3.domain.posts.edit.EditPostUseCase
+import com.example.cp_3.domain.posts.obtain.ObtainPostsUseCase
+import com.example.cp_3.domain.posts.remove.RemovePostUseCase
 
 val networkModule = module {
     single {
@@ -44,5 +48,9 @@ val networkModule = module {
 val appModule = module {
     includes(networkModule)
     singleOf(::AppPostRepository) { bind<PostRepository>() }
+    factoryOf(::CreatePostUseCase)
+    factoryOf(::EditPostUseCase)
+    factoryOf(::ObtainPostsUseCase)
+    factoryOf(::RemovePostUseCase)
     viewModelOf(::AppViewModel)
 }

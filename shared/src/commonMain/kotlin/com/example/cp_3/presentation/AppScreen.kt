@@ -15,23 +15,50 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
+import com.example.cp_3.presentation.ui.ObserveEvents
 
 @Composable
 fun App(
     viewModel: AppViewModel = koinViewModel(),
 ) {
     MaterialTheme {
+        val snackbarHostState = remember { SnackbarHostState() }
+        val coroutineScope = rememberCoroutineScope()
         val state by viewModel.state.collectAsStateWithLifecycle()
+
+        ObserveEvents(viewModel.events) { event ->
+            when (event) {
+                is AppEvent.ShowDeleteErrorSnackbar -> {
+                    showSnackbar(coroutineScope, snackbarHostState, event.errorMessage)
+                }
+                is AppEvent.ShowGetErrorSnackbar -> {
+                    showSnackbar(coroutineScope, snackbarHostState, event.errorMessage)
+                }
+                is AppEvent.ShowPostErrorSnackbar -> {
+                    showSnackbar(coroutineScope, snackbarHostState, event.errorMessage)
+                }
+                is AppEvent.ShowPutErrorSnackbar -> {
+                    showSnackbar(coroutineScope, snackbarHostState, event.errorMessage)
+                }
+            }
+        }
 
         Column(
             modifier = Modifier
@@ -41,22 +68,36 @@ fun App(
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            SnackbarHost(hostState = snackbarHostState)
             AppContent(
                 state = state,
                 onGet = {
-                    viewModel.fetchPosts()
+                    viewModel.onAction(AppAction.OnFetchPosts)
                 },
                 onPost = {
-                    viewModel.createPost()
+                    viewModel.onAction(AppAction.OnCreatePost)
                 },
                 onPut = {
-                    viewModel.updatePost()
+                    viewModel.onAction(AppAction.OnUpdatePost)
                 },
                 onDelete = {
-                    viewModel.deletePost()
+                    viewModel.onAction(AppAction.OnDeletePost)
                 }
             )
         }
+    }
+}
+
+private fun showSnackbar(
+    scope: CoroutineScope,
+    snackbarHostState: SnackbarHostState,
+    message: String
+) {
+    scope.launch {
+        snackbarHostState.showSnackbar(
+            message = message,
+            duration = SnackbarDuration.Short
+        )
     }
 }
 
